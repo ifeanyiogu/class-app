@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'corsheaders',
     'classroom',
+    'class_session',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +75,7 @@ CORS_ALLOW_ALL_ORIGINS = get_bool("CORS_ALLOW_ALL_ORIGINS") #[
  # 'http://localhost:8158',
 #]
 FRONT_END_URL = ""
+HOST_URL = os.getenv("HOST_URL")
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -145,6 +147,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL ='/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

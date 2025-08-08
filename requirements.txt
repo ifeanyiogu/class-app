@@ -25,9 +25,11 @@ kombu==5.5.4
 msgpack==1.1.1
 packaging==25.0
 phonenumbers==9.0.10
+pillow==11.3.0
 priority==2.0.0
 prompt_toolkit==3.0.51
 psycopg2==2.9.10
+pydub==0.25.1
 python-crontab==3.3.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
