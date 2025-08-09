@@ -2,6 +2,9 @@ from class_session.models import ClassSession, Lecture
 from classroom.models import ClassMember
 from rest_framework import status
 from django.conf import settings
+from datetime import timedelta
+from django.utils import timezone
+
 
 def get_image_url(fil):
     if fil:
@@ -34,6 +37,10 @@ def get(request, pk):
             'error': 'You Are Not A Member',
             'status':status.HTTP_401_UNAUTHORIZED
         }
+    
+    if session.date <= timezone.now() - timedelta(minutes=session.duration) and not session.is_expired:
+        session.is_expired = True
+        session.save()
     lecture = session.lecture
     
     data = {

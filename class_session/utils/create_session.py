@@ -51,6 +51,7 @@ def post(request, class_r):
     topic = data.get("topic")
     note = data.get('note')
     audio = request.FILES.get("audio")
+    duration = data.get('duration')
     
     if (not topic or topic.strip() == "") or (not note or note.strip() == ""):
         return {
@@ -74,6 +75,9 @@ def post(request, class_r):
         audi = convert_audio(audio, lec)
         if audi.get('error'):
             return audi
+    if duration and duration.strip() != '':
+        session.duration = duration.strip()
+        session.save()
     return {
         "session_id":session.pk,
         "lecture_id":lec.pk,

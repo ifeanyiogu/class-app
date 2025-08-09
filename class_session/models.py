@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now as _now
+from datetime import timedelta
 from classroom.models import ClassRoom
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
@@ -12,7 +13,38 @@ User = get_user_model()
 class ClassSession(models.Model):
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name="sessions")
     is_published = models.BooleanField(default=False)
-    date = models.DateTimeField(default=_now())
+    is_expired = models.BooleanField(default=False)
+    duration = models.PositiveBigIntegerField(default=45)
+    date = models.DateTimeField(null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            old_pub = ClassSession.objects.get(pk=self.pk).is_published
+            if old_pub and not self.is_published:
+                raise ValidationError('Cannot unpublish this Session')
+            old_date = ClassSession.objects.get(pk=self.pk).date
+            if not old_pub and self.is_published:
+                self.date = _now()
+            if not old_pub and not self.is_published:
+                self.date = None
+            if old_pub:
+                self.date = old_date
+        else:
+            self.date = None
+            self.is_expired = False
+            self.is_published = False
+        if self.date is not None:
+            expire_time = self.date + timedelta(minutes=self.duration)
+            if _now() >= expire_time:
+                self.is_expired = True
+            else:
+                self.is_expired = False
+        else:
+            self.is_expired = False
+            
+        super().save(*args, **kwargs)
+            
+                
     
     
 class Lecture(models.Model):

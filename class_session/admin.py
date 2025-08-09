@@ -1,5 +1,6 @@
 from django.contrib import admin
-
+from datetime import timedelta
+from django.utils import timezone
 # Register your models here.
 
 from django.core.exceptions import ValidationError
@@ -15,7 +16,7 @@ class LectureInline(admin.TabularInline):
 
 class SessionAdmin(admin.ModelAdmin):
     inlines = [LectureInline]
-    list_display = ["id", "classroom__name", "lecture__topic", "is_published", "date"]
+    list_display = ["id", "classroom__name", "lecture__topic", "is_published",'is_expired', 'duration', "date"]
     ordering = ("-date",)
 
     def save_model(self, request, obj, form, change):
@@ -34,6 +35,17 @@ class SessionAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         # Optionally you can customize form to add cross-field validation
         return super().get_form(request, obj, **kwargs)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        # Bulk update expired items
+        qs.filter(
+            is_expired=False,
+            is_published=True,
+            date__lte=timezone.now() - timedelta(minutes=45)
+        ).update(is_expired=True)
+        return qs
+
 
 
 class LectureAdmin(admin.ModelAdmin):

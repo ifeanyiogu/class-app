@@ -62,11 +62,17 @@ def post(request, pk):
     audio = request.FILES.get("audio")
     images = request.FILES.get('image')
     _file = request.FILES.get('file')
+    duration = payload.get('duration')
     content_t = ContentType.objects.get_for_model(lecture)
     
     if topic and topic.strip() != "":
         top = topic.strip()
         lecture.topic = top
+        
+    if duration and duration.strip() != "":
+        dur = duration.strip()
+        session.duration = dur
+        session.save()
         
     if note and note.strip() != "":
         nott = note.strip()

@@ -3,11 +3,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
-from .utils import get_sessions, one_session, one_session_files, update_lecture, create_session
+from .utils import get_sessions, one_session, one_session_files, update_lecture, create_session, ses_publish
 
 
 
 # Create your views here.
+
+class publish(APIView):
+    def post(self, request, pk):
+        data = ses_publish.post(request, pk)
+        return Response(data, status=data['status'])
+
 class AllSessionsView(APIView):
    
     def get(self, request, classroom):
