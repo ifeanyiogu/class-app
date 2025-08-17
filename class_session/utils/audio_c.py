@@ -3,6 +3,7 @@ import uuid
 from pydub import AudioSegment
 from django.core.files import File
 from rest_framework import status
+from django.conf import settings
 
 def convert_audio(audio, lecture):
     try:
@@ -12,6 +13,7 @@ def convert_audio(audio, lecture):
         with open(temp_path, 'wb+') as file:
             for chunk in audio.chunks():
                 file.write(chunk)
+                
         #get file extension and convert
         ext = os.path.splitext(temp_path)[1].lower().replace('.', '')
         input_format = 'wav' if ext == 'wav' else ext or 'webm'

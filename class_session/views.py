@@ -3,11 +3,33 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
-from .utils import get_sessions, one_session, one_session_files, update_lecture, create_session, ses_publish
-
+from .utils import get_sessions, one_session, one_session_files, update_lecture, create_session, ses_publish, upload_image, upload_file, fetch_file, fetch_images
 
 
 # Create your views here.
+class FetchImages(APIView):
+    def get(self, request, pk, obj, i):
+        data = fetch_images.get(request, pk, obj, i)
+        return Response(data, status=data['status'])
+        
+        
+class FetchFile(APIView):
+    def get(self, request, pk, obj, i):
+        data = fetch_file.get(request, pk, obj, i)
+        return Response(data, status=data['status'])
+
+
+class UploadFile(APIView):
+    parser_classes = [MultiPartParser]
+    def post(self, request, pk, obj, i):
+        data = upload_file.post(request, pk, obj, i)
+        return Response(data, status=data['status'])
+
+class UploadImage(APIView):
+    parser_classes = [MultiPartParser]
+    def post(self, request, pk, obj, i):
+        data = upload_image.post(request, pk, obj, i)
+        return Response(data, status=data['status'])
 
 class publish(APIView):
     def post(self, request, pk):

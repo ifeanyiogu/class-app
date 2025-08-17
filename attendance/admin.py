@@ -4,6 +4,6 @@ from .models import Attendance
 class AttendAdmin(admin.ModelAdmin):
     list_display = ['session__classroom__name', 'session__lecture__topic', 'user__username']
     
-    ordering = ('-date')
+    ordering = ('-date',)
     
 admin.site.register(Attendance, AttendAdmin)
