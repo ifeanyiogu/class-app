@@ -26,4 +26,6 @@ urlpatterns = [
     path('class-session/', include('class_session.urls')),
     path('attendance/', include('attendance.urls')),
     path('assignment/', include('assignment.urls')),
+    path('submission/', include('submission.urls')),
+    path('comment/', include('comment.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

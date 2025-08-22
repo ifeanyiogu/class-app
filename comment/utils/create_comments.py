@@ -1,0 +1,44 @@
+from rest_framework import status
+from comment.models import Comment
+from class_session.models import ClassSession
+from class_session.utils import verify_membership
+from .all_comments import get_user
+
+
+def post(request, pk):
+    user = request.user
+    try:
+        session = ClassSession.objects.prefetch_related('comments').get(pk=pk)
+    except ClassSession.DoesNotExist:
+        return {
+            'error':'session is not available',
+            'status':status.HTTP_404_NOT_FOUND
+        }
+    verified = verify_membership.verify(user, session.classroom)
+    if verified.get('error') is not None:
+        return verified
+    payload = request.data
+    if not payload.get('note') or not payload.get('note').strip():
+        return {
+            'error':'no comment provided',
+            'status':status.HTTP_400_BAD_REQUEST
+        }
+    note = payload.get('note').strip()
+    if session.is_expired:
+        return {
+            'error':'session is over',
+            'status':status.HTTP_400_BAD_REQUEST
+        }
+    if not session.is_published:
+        return {
+            'error':'session is not published yet',
+            'status':status.HTTP_400_BAD_REQUEST
+        }
+    new_com = Comment.objects.create(user=user, session=session, note=note)
+    
+    return {
+            'id':new_com.pk,
+            'user':get_user(new_com, user),
+            'note':new_com.note,
+            'status':status.HTTP_201_CREATED
+        }

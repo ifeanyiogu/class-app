@@ -26,9 +26,11 @@ class Assignment(models.Model):
                     self.deadline=None
                 if self.is_published:
                     if self.deadline is None:
-                        self.is_published = False
+                        raise ValidationError('set the deadline')
         else:
             if self.is_published:
+                if not self.session.is_published:
+                    raise ValidationError('session is mot published')
                 if self.deadline is None:
                     raise ValidationError('set_deadline_error')
         super().save(*args, **kwargs)

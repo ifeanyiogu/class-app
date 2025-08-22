@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'attendance',
     'assignment',
     'submission',
+    'comment',
 ]
 
 MIDDLEWARE = [
