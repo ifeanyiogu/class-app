@@ -17,6 +17,7 @@ class Assignment(models.Model):
         if self.pk is not None:
             old_obj = Assignment.objects.get(pk=self.pk)
             if old_obj.is_published:
+                raise ValidationError('Assignment already published')
                 if not self.is_published:
                     self.is_published = True
                 if old_obj.deadline is None:

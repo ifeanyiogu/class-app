@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .utils import list_assignments, one_assignment, create_assignment
+from .utils import list_assignments, one_assignment, create_assignment, update_assignment
 from rest_framework.parsers import MultiPartParser
 
 # Create your views here.
@@ -21,4 +21,11 @@ class CreateAssignment(APIView):
     parser_classes = [MultiPartParser]
     def post(self, request, pk):
         data = create_assignment.post(request, pk)
+        return Response(data, status=data['status'])
+        
+        
+class UpdateDeleteAssignment(APIView):
+    parser_classes = [MultiPartParser]
+    def post(self, request, pk):
+        data = update_assignment.post(request, pk)
         return Response(data, status=data['status'])
